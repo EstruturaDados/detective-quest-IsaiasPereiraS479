@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Sala {
+    char nome[50];
+    struct Sala *esq;
+    struct Sala *dir;
+};
+
+struct Sala* criarSala(const char *nome) {
+    struct Sala *s = malloc(sizeof(struct Sala));
+    strcpy(s->nome, nome);
+    s->esq = NULL;
+    s->dir = NULL;
+    return s;
+}
+
+void explorarSalas(struct Sala *atual) {
+    char opcao;
+
+    while (1) {
+        printf("\nVocê está em: %s\n", atual->nome);
+        printf("Escolha:\n");
+        printf("  e - Ir para a esquerda\n");
+        printf("  d - Ir para a direita\n");
+        printf("  s - Sair da exploração\n");
+        printf("Opcao: ");
+        scanf(" %c", &opcao);
+
+        if (opcao == 's') {
+            printf("Encerrando exploração.\n");
+            return;
+        }
+
+        if (opcao == 'e') {
+            if (atual->esq != NULL) {
+                atual = atual->esq;
+            } else {
+                printf("Caminho bloqueado! Fim do percurso.\n");
+                return;
+            }
+        }
+        else if (opcao == 'd') {
+            if (atual->dir != NULL) {
+                atual = atual->dir;
+            } else {
+                printf("Caminho bloqueado! Fim do percurso.\n");
+                return;
+            }
+        }
+        else {
+            printf("Opcao invalida!\n");
+        }
+    }
+}
+
+int main() {
+    // Montagem estática da árvore (nível Novato)
+    struct Sala *hall = criarSala("Hall de Entrada");
+    hall->esq = criarSala("Sala de Estar");
+    hall->dir = criarSala("Biblioteca");
+
+    hall->esq->esq = criarSala("Jardim");
+    hall->esq->dir = criarSala("Cozinha");
+
+    hall->dir->esq = criarSala("Escritório");
+    hall->dir->dir = criarSala("Porão");
+
+    printf("Bem-vindo à Mansão Misteriosa!\n");
+    explorarSalas(hall);
+
+    return 0;
+}
